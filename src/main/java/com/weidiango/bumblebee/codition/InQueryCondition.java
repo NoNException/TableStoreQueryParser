@@ -1,13 +1,15 @@
-package com.weidiango.componet.codition;
+package com.weidiango.bumblebee.codition;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
-import com.weidiango.componet.tools.QueryParser;
+import com.weidiango.bumblebee.tools.QueryParser;
 
 import java.util.List;
 
 /**
- * @auther ZongZi
+ * IN操作符的Condition转换
+ *
+ * @author ZongZi
  * @date 2019/4/26 5:33 PM
  */
 public class InQueryCondition extends QueryCondition {

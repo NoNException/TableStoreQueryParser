@@ -1,13 +1,14 @@
-package com.weidiango.componet.codition;
+package com.weidiango.bumblebee.codition;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alicloud.openservices.tablestore.model.search.query.Query;
-import com.weidiango.componet.Start;
-import com.weidiango.componet.tools.QueryParser;
+import com.weidiango.bumblebee.tools.QueryParser;
 
 /**
- * @auther ZongZi
+ * 基础的操作实体。
+ *
+ * @author ZongZi
  * @date 2019/4/26 5:22 PM
  */
 public class QueryCondition {

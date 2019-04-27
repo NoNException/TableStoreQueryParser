@@ -1,4 +1,4 @@
-package com.weidiango.componet;
+package com.weidiango.bumblebee;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alicloud.openservices.tablestore.SyncClient;
+import com.alicloud.openservices.tablestore.model.Row;
 import com.alicloud.openservices.tablestore.model.search.SearchQuery;
 import com.alicloud.openservices.tablestore.model.search.SearchRequest;
 import com.alicloud.openservices.tablestore.model.search.SearchResponse;
@@ -15,9 +16,9 @@ import com.alicloud.openservices.tablestore.model.search.sort.FieldSort;
 
 import com.alicloud.openservices.tablestore.model.search.sort.Sort;
 import com.alicloud.openservices.tablestore.model.search.sort.SortOrder;
-import com.weidiango.componet.codition.BoolQueryCondition;
-import com.weidiango.componet.codition.InQueryCondition;
-import com.weidiango.componet.codition.QueryCondition;
+import com.weidiango.bumblebee.codition.BoolQueryCondition;
+import com.weidiango.bumblebee.codition.InQueryCondition;
+import com.weidiango.bumblebee.codition.QueryCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
@@ -33,27 +34,27 @@ import java.util.Stack;
  * @author ZongZi
  * @date 2019/3/27 8:16 PM
  */
-public class Start {
-    private static final String TABLE_NAME = "";
-    private static final String endPoint = "";
-    private static final String accessKeyId = "";
-    private static final String accessKeySecret = "";
-    private static final String instanceName = "";
+public class Transfer {
+    private static final String TABLE_NAME = "t_order_contract";
+    private static final String END_POINT = "https://reissue-Test.cn-hangzhou.ots.aliyuncs.com";
+    private static final String ACCESS_KEY_ID = "LTAIZejUplgu1n8c";
+    private static final String ACCESS_KEY_SECRET = "yXdH1TK2o35it5ETp2KULn7syv82ZI";
+    private static final String INSTANCE_NAME = "reissue-Test";
     private static final Integer MAX_OFF_SET = 2000;
-    private static final String INDEX_NAME = "indx___";
+    private static final String INDEX_NAME = "t_order_search";
+
 
     public static void main(String[] args) throws Exception {
-
-        SyncClient client = new SyncClient(endPoint, accessKeyId, accessKeySecret, instanceName);
-        long startTime = System.nanoTime();
-        for (int i = 0; i < 1000000; i++) {
-            String dbType = JdbcConstants.MYSQL;
-            String sql = "select a.balal from a where a.id = 100 and a.name > '100A' order by a.name desc limit 100,299";
-            SearchRequest searchRequest = new Start().sqlParser(sql, dbType);
-            SearchResponse search = client.search(searchRequest);
-        }
-        long l = System.nanoTime();
-        System.out.println(((double) (l - startTime)) / 1000000);
+        SyncClient client = new SyncClient(END_POINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET, INSTANCE_NAME);
+        // for (int i = 0; i < 1000000; i++) {
+        String dbType = JdbcConstants.MYSQL;
+        String sql = "select * from t_order_contract a where " +
+                " a.tradeNumber like 'TR17*6A' and a.tradeId > 13271 limit " +
+                "1,10 " +
+                "order by a.tradeId desc";
+        SearchRequest searchRequest = new Transfer().sqlParser(sql, dbType);
+        SearchResponse search = client.search(searchRequest);
+        List<Row> rows = search.getRows();
     }
 
     public SearchRequest sqlParser(String sql, String dbType) throws Exception {
@@ -162,7 +163,12 @@ public class Start {
             } else if (preStackObj instanceof SQLExpr) {
                 SQLValuableExpr right = (SQLValuableExpr) stack.pop();
                 SQLPropertyExpr left = (SQLPropertyExpr) stack.pop();
+                List<SQLBinaryOperator> notOperator = Arrays.asList(SQLBinaryOperator.NotLike,
+                        SQLBinaryOperator.NotEqual);
                 QueryCondition queryCondition = new QueryCondition(left.getName(), right, operator);
+                if (notOperator.contains(operator)) {
+                    queryCondition = new BoolQueryCondition(queryCondition.getOperation(), Arrays.asList(queryCondition));
+                }
                 stack.push(queryCondition);
             } else {
                 QueryCondition rightCondition = (QueryCondition) stack.pop();
@@ -178,7 +184,10 @@ public class Start {
                 SQLInListExpr listValues = (SQLInListExpr) expr;
                 SQLPropertyExpr propertyExpr = (SQLPropertyExpr) listValues.getExpr();
                 List<SQLExpr> targetList = listValues.getTargetList();
-                InQueryCondition tableStoreInCondition = new InQueryCondition(propertyExpr.getName(), targetList, listValues.isNot());
+                QueryCondition tableStoreInCondition = new InQueryCondition(propertyExpr.getName(), targetList, listValues.isNot());
+                if (listValues.isNot()) {
+                    tableStoreInCondition = new BoolQueryCondition(tableStoreInCondition.getOperation(), Arrays.asList(tableStoreInCondition));
+                }
                 stack.push(tableStoreInCondition);
             } else {
                 stack.push(expr);

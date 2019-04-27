@@ -1,14 +1,16 @@
-package com.weidiango.componet.codition;
+package com.weidiango.bumblebee.codition;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.fastjson.JSON;
 import com.alicloud.openservices.tablestore.model.search.query.BoolQuery;
-import com.weidiango.componet.tools.QueryParser;
+import com.weidiango.bumblebee.tools.QueryParser;
 
 import java.util.List;
 
 /**
- * @auther ZongZi
+ * tableStore的多条件查询
+ *
+ * @author ZongZi
  * @date 2019/4/26 5:28 PM
  */
 public class BoolQueryCondition extends QueryCondition {
