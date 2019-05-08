@@ -5,13 +5,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
+import com.alibaba.druid.util.StringUtils;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.search.query.*;
 import com.weidiango.bumblebee.codition.BoolQueryCondition;
 import com.weidiango.bumblebee.codition.InQueryCondition;
 import com.weidiango.bumblebee.codition.QueryCondition;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -180,15 +180,15 @@ public class QueryParser {
      * 如果匹配符只存在结尾，则使用前缀匹配
      * 其他情况使用通配符查询。
      * <p>
-     * 如果查询的字段在tableStore的索引是支持分词的话，建议直接使用文本匹配的输入格式，其他两种方式会导致查询准确，
+     * 如果查询的字段在tableStore的索引是支持分词的话，建议直接使用文本匹配的输入格式，
      * 如果是字符类型的话，则建议使用后两种方式
      */
     public enum LikeQuery {
         /**
          * 模糊匹配的转换
          */
-        matchQueryStart("^(\\*|\\?).*$ "),
-        matchQueryNone("^((?!\\*|\\?).)*$ "),
+        matchQueryStart("^(\\*|\\?).*$"),
+        matchQueryNone("^((?!\\*|\\?).)*$"),
         prefixQuery("^((?!\\*|\\?).)*(\\*)");
         private String regex;
 
