@@ -206,7 +206,7 @@ public class QueryParser {
 
         public static Query computeQuery(String value, String columnName) {
 
-            if (StringUtils.isEmpty(value) || StringUtils.isEmpty(columnName)) {
+            if (StringUtils.isEmpty(columnName)) {
                 throw new IllegalArgumentException("value or columnName is null [" + value + "," + columnName + "]");
             }
             value = value.replaceAll("%", "*");
